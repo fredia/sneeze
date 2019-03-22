@@ -3,10 +3,16 @@ project(sneeze)
 
 set(CMAKE_CXX_STANDARD 17)
 
-find_package(Boost REQUIRED COMPONENTS system)
-include_directories(sneeze ${Boost_INCLUDE_DIRS})
-link_directories(sneeze ${Boost_LIBRARY_DIRS})
-target_link_libraries(sneeze ${Boost_LIBRARIES})
+include_directories(src/include)
+aux_source_directory(src/main dir_srcs)
 
+#添加头文件搜索路径
+include_directories(/usr/include)
 
-add_executable(sneeze main.cpp include/Router.hpp include/HttpServer.hpp include/Connection.hpp)
+#添加库文件搜索路径
+link_directories(/usr/lib)
+
+find_package(Boost REQUIRED)
+
+add_executable(sneeze ${dir_srcs} src/include/base_server.hpp src/include/http_server.hpp src/include/handler.hpp)
+target_link_libraries(sneeze pthread boost_system)
