@@ -16,13 +16,18 @@ namespace sneeze {
             return instance;
         }
 
-        std::shared_ptr<session> create_session(const std::string &name, std::size_t expire,
-                                                const std::string &path = "/", const std::string &domain = "") {
+        inline static std::string get_uuid_random() {
             uuid_t uuid_t_;
             uuid_generate_random(uuid_t_);
             char buf[1024];
             uuid_unparse(uuid_t_, buf);
             std::string uuid_str = std::string(buf);
+            return uuid_str;
+        }
+
+        std::shared_ptr<session> create_session(const std::string &name, std::size_t expire,
+                                                const std::string &path = "/", const std::string &domain = "") {
+            std::string uuid_str = get_uuid_random();
             auto s = std::make_shared<session>(name, uuid_str, expire, path, domain);
 
             {

@@ -25,6 +25,7 @@ namespace sneeze {
         none
     };
 
+    inline const std::string_view STAIC_RES = "static_resource";
     inline const std::string CSESSIONID = "CSESSIONID";
     //参考http://www.w3school.com.cn/media/media_mimeref.asp
     static const std::map<std::string_view, std::string_view> mime_map = {

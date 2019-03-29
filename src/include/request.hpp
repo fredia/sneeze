@@ -17,6 +17,43 @@
 
 namespace sneeze {
 
+    enum class http_method {
+        DEL,
+        GET,
+        HEAD,
+        POST,
+        PUT,
+        CONNECT,
+        OPTIONS,
+        TRACE
+    };
+    constexpr inline auto GET = http_method::GET;
+    constexpr inline auto POST = http_method::POST;
+    constexpr inline auto DEL = http_method::DEL;
+    constexpr inline auto HEAD = http_method::HEAD;
+    constexpr inline auto PUT = http_method::PUT;
+    constexpr inline auto CONNECT = http_method::CONNECT;
+    constexpr inline auto TRACE = http_method::TRACE;
+    constexpr inline auto OPTIONS = http_method::OPTIONS;
+
+    constexpr auto type_to_name(std::integral_constant<http_method, http_method::DEL>) noexcept { return "DELETE"; }
+
+    constexpr auto type_to_name(std::integral_constant<http_method, http_method::GET>) noexcept { return "GET"; }
+
+    constexpr auto type_to_name(std::integral_constant<http_method, http_method::HEAD>) noexcept { return "HEAD"; }
+
+    constexpr auto type_to_name(std::integral_constant<http_method, http_method::POST>) noexcept { return "POST"; }
+
+    constexpr auto type_to_name(std::integral_constant<http_method, http_method::PUT>) noexcept { return "PUT"; }
+
+    constexpr auto
+    type_to_name(std::integral_constant<http_method, http_method::CONNECT>) noexcept { return "CONNECT"; }
+
+    constexpr auto
+    type_to_name(std::integral_constant<http_method, http_method::OPTIONS>) noexcept { return "OPTIONS"; }
+
+    constexpr auto type_to_name(std::integral_constant<http_method, http_method::TRACE>) noexcept { return "TRACE"; }
+
     inline static std::vector<std::string_view> pathinfo_mem;
 
     enum class data_proc_state : int8_t {
