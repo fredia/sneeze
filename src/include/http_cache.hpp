@@ -24,7 +24,7 @@ namespace sneeze {
         }
 
         void add(const std::string &key, const std::vector<std::string> &content) {
-            std::lock_guard<std::mutex> lock(mtx_);
+            std::unique_lock<std::mutex> lock(mtx_);
 
             if (std::distance(cur_it_, cache_.end()) > MAX_CACHE_SIZE) {
                 cur_it_ = cache_.begin();
@@ -35,7 +35,7 @@ namespace sneeze {
         }
 
         std::vector<std::string> get(const std::string &key) {
-            std::lock_guard<std::mutex> lock(mtx_);
+            std::unique_lock<std::mutex> lock(mtx_);
             auto time_it = cache_time_.find(key);
             auto it = cache_.find(key);
             auto now_time = std::time(nullptr);

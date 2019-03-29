@@ -64,7 +64,6 @@ namespace sneeze {
             result.append(name_);
             result.append("=");
             if (version_ == 0) {
-                // Netscape cookie
                 result.append(value_);
                 if (max_age_ != -1) {
                     result.append("; expires=");
