@@ -396,8 +396,8 @@ namespace sneeze {
             return v;
         }
 
-        std::map<std::string_view, std::string_view> parse_query(std::string_view str) {
-            std::map<std::string_view, std::string_view> query;
+        std::map<std::string, std::string> parse_query(std::string_view str) {
+            std::map<std::string, std::string> query;
             std::string_view key;
             std::string_view val;
             size_t pos = 0;
@@ -511,7 +511,7 @@ namespace sneeze {
             return mime;
         }
 
-        std::map<std::string_view, std::string_view> get_form_url_map() const {
+        std::map<std::string, std::string> get_form_url_map() const {
             return form_url_map_;
         }
 
@@ -551,7 +551,7 @@ namespace sneeze {
             return http_type_;
         }
 
-        const std::map<std::string_view, std::string_view> &queries() const {
+        const std::map<std::string, std::string> &queries() const {
             return queries_;
         }
 
@@ -582,7 +582,7 @@ namespace sneeze {
             return {};
         }
 
-        std::string_view get_query_value(std::string_view key) {
+        std::string_view get_query_value(std::string key) {
             auto url = get_url();
             url = url.length() > 1 && url.back() == '/' ? url.substr(0, url.length() - 1) : url;
             std::string map_key = std::string(url.data(), url.size()) + std::string(key.data(), key.size());
@@ -817,8 +817,8 @@ namespace sneeze {
         size_t cur_size_ = 0;
         size_t left_body_len_ = 0;
 
-        std::map<std::string_view, std::string_view> queries_;
-        std::map<std::string_view, std::string_view> form_url_map_;
+        std::map<std::string, std::string> queries_;
+        std::map<std::string, std::string> form_url_map_;
         std::map<std::string, std::string> multipart_form_map_;
         bool has_gzip_ = false;
         std::string gzip_str_;
