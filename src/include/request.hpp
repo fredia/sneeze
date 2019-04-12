@@ -301,7 +301,7 @@ namespace sneeze {
             }
         }
 
-        inline bool iequal(const char *s, size_t l, const char *t) {
+        inline bool iequal(const char *s, size_t l, const char *t) const {
             if (strlen(t) != l)
                 return false;
 
@@ -313,7 +313,7 @@ namespace sneeze {
             return true;
         }
 
-        std::string_view get_header_value(std::string_view key) {
+        std::string_view get_header_value(std::string_view key) const {
             for (size_t i = 0; i < num_headers_; i++) {
                 if (iequal(headers_[i].name, headers_[i].name_len, key.data()))
                     return std::string_view(headers_[i].value, headers_[i].value_len);
@@ -396,7 +396,7 @@ namespace sneeze {
             return v;
         }
 
-        std::map<std::string, std::string> parse_query(std::string_view str) {
+        std::map<std::string, std::string> parse_query(std::string str) {
             std::map<std::string, std::string> query;
             std::string_view key;
             std::string_view val;
@@ -440,7 +440,7 @@ namespace sneeze {
                     return false;
             }
 #endif
-            auto body_str = body();
+            std::string body_str = body().data();
             form_url_map_ = parse_query(body_str);
             if (form_url_map_.empty())
                 return false;
@@ -474,11 +474,11 @@ namespace sneeze {
             return url.substr(1);
         }
 
-        inline bool is_form_url_encode(std::string_view str) {
+        inline bool is_form_url_encode(std::string_view str) const {
             return str.find("%") != std::string_view::npos || str.find("+") != std::string_view::npos;
         }
 
-        std::string get_relative_filename() {
+        std::string get_relative_filename() const {
             auto file_name = get_url();
             if (is_form_url_encode(file_name)) {
                 return "." + code_utils::get_string_by_urldecode(file_name);
@@ -487,7 +487,7 @@ namespace sneeze {
             return "." + std::string(file_name.data(), file_name.size());
         }
 
-        std::string get_filename_from_path() {
+        std::string get_filename_from_path() const {
             auto file_name = get_res_path();
             if (is_form_url_encode(file_name)) {
                 return code_utils::get_string_by_urldecode(file_name);
@@ -496,7 +496,7 @@ namespace sneeze {
             return std::string(file_name.data(), file_name.size());
         }
 
-        inline std::string_view get_extension(std::string_view name) {
+        inline std::string_view get_extension(std::string_view name) const {
             size_t pos = name.rfind('.');
             if (pos == std::string_view::npos) {
                 return {};
@@ -505,7 +505,7 @@ namespace sneeze {
             return name.substr(pos);
         }
 
-        std::string_view get_mime(std::string_view filename) {
+        std::string_view get_mime(std::string_view filename) const {
             auto extension = get_extension(filename.data());
             auto mime = get_mime_type(extension);
             return mime;
@@ -582,7 +582,7 @@ namespace sneeze {
             return {};
         }
 
-        std::string_view get_query_value(std::string key) {
+        std::string get_query_value(const std::string& key) {
             auto url = get_url();
             url = url.length() > 1 && url.back() == '/' ? url.substr(0, url.length() - 1) : url;
             std::string map_key = std::string(url.data(), url.size()) + std::string(key.data(), key.size());
@@ -595,13 +595,13 @@ namespace sneeze {
                 if (code_utils::is_url_encode(itf->second)) {
                     auto ret = utf8_character_params_.emplace(map_key,
                                                               code_utils::get_string_by_urldecode(itf->second));
-                    return std::string_view(ret.first->second.data(), ret.first->second.size());
+                    return ret.first->second.data();
                 }
                 return itf->second;
             }
             if (code_utils::is_url_encode(it->second)) {
                 auto ret = utf8_character_params_.emplace(map_key, code_utils::get_string_by_urldecode(it->second));
-                return std::string_view(ret.first->second.data(), ret.first->second.size());
+                return ret.first->second.data();
             }
             return it->second;
         }
@@ -657,13 +657,14 @@ namespace sneeze {
             return files_;
         }
 
-        inline std::vector<std::string_view> split(std::string_view s, std::string_view delimiter) {
+        inline std::vector<std::string_view> split(std::string_view s, std::string_view delimiter) const{
             size_t start = 0;
             size_t end = s.find_first_of(delimiter);
 
             std::vector<std::string_view> output;
 
-            while (end <= std::string_view::npos) {
+            while (end <= std::string_view::npos)
+            {
                 output.emplace_back(s.substr(start, end - start));
 
                 if (end == std::string_view::npos)
@@ -676,7 +677,7 @@ namespace sneeze {
             return output;
         }
 
-        inline const std::map<std::string_view, std::string_view> get_cookies_map(std::string_view cookies_str) {
+        inline const std::map<std::string_view, std::string_view> get_cookies_map(std::string_view cookies_str) const {
             std::map<std::string_view, std::string_view> cookies;
             auto cookies_vec = split(cookies_str, "; ");
             for (auto iter:cookies_vec) {
@@ -688,7 +689,8 @@ namespace sneeze {
             return cookies;
         };
 
-        std::map<std::string_view, std::string_view> get_cookies() {
+        std::map<std::string_view, std::string_view> get_cookies() const {
+            //auto cookies_str = get_header_value("cookie");
             auto cookies = get_cookies_map(cookie_str_);
             return cookies;
         }

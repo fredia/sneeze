@@ -139,9 +139,9 @@ namespace sneeze {
         }
 
         //set http handlers
-        template<http_method... Is, typename Function>
-        void set_http_handler(std::string_view name, Function &&f) {
-            http_router_.register_handler<Is...>(name, std::forward<Function>(f));
+        template<http_method... Is, typename Function, typename... Ap>
+        void set_http_handler(std::string_view name, Function &&f, Ap... ap) {
+            http_router_.register_handler<Is...>(name, std::forward<Function>(f), std::forward<Ap>(ap)...);
         }
 
         void set_res_cache_max_age(std::time_t seconds) {

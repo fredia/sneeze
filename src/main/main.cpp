@@ -1,8 +1,10 @@
 #include <iostream>
 #include "http_server.hpp"
+#include "controller.hpp"
 
 using namespace sneeze;
 using namespace std;
+
 int main() {
     const int max_thread_num = 4;
     sneeze::http_server server(max_thread_num);
@@ -48,5 +50,19 @@ int main() {
             res.render_string("multipart finished");
         }
     });
+
+    server.set_http_handler<GET, POST, OPTIONS>("/params", [](request &req, response &res) {
+        res.add_header("Access-Control-Allow-Origin", "*");
+        if (req.get_method() == "OPTIONS") {
+            res.add_header("Access-Control-Allow-Headers", "Authorization");
+            res.render_string("");
+        } else if (req.get_method() == "POST") {
+            string name = req.get_query_value("name").data();
+            res.render_string("OK");
+        }
+    });
+
+    controller ctl;
+    server.set_http_handler<GET, OPTIONS>("/test_con", &controller::upload_book_detail_handler, &ctl);
     server.run();
 }
